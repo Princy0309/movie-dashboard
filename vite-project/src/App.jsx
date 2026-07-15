@@ -10,6 +10,27 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  const[sortBy, setSortBy] = useState('default');
+
+  const sortedMovies = [...movies].sort((a, b) => {
+    if (sortBy === 'title-asc') {
+      return a.title.localeCompare(b.title);
+    }
+    else if(sortBy === 'title-desc') {
+      return b.title.localeCompare(a.title);
+    }
+    else if(sortBy === 'rating-asc') {
+      return a.vote_average - b.vote_average;  
+    }
+    else if(sortBy === 'rating-desc') {
+      return b.vote_average - a.vote_average;
+    }
+    else{
+      return 0;
+    }
+  })
+
+
   useEffect(() => {
 
     let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
@@ -43,7 +64,10 @@ function App() {
         ></input>
       </div>
 
-     <select className='sort-dropdown'>
+     <select 
+         className='sort-dropdown'
+         value={sortBy}
+         onChange={(e) => setSortBy(e.target.value)}>
       <option value="default">Sort movies by...</option>
       <option value="title-asc">Title (A-Z)</option>
       <option value="title-desc">Title (Z-A)</option>
@@ -51,8 +75,8 @@ function App() {
       <option value="rating-desc">Rating (High to Low)</option>
      </select>
 
-      {movies.length > 0 ? (<div className="movie-grid">
-        {movies.map(movie => (
+      {sortedMovies.length > 0 ? (<div className="movie-grid">
+        {sortedMovies.map(movie => (
           <div key={movie.id} className="movie-card">
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
