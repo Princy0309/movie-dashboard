@@ -43,6 +43,14 @@ function App() {
         ></input>
       </div>
 
+     <select className='sort-dropdown'>
+      <option value="default">Sort movies by...</option>
+      <option value="title-asc">Title (A-Z)</option>
+      <option value="title-desc">Title (Z-A)</option>
+      <option value="rating-asc">Rating (Low to High)</option>
+      <option value="rating-desc">Rating (High to Low)</option>
+     </select>
+
       {movies.length > 0 ? (<div className="movie-grid">
         {movies.map(movie => (
           <div key={movie.id} className="movie-card">
