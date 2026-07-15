@@ -80,7 +80,7 @@ h1 {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.search-input:focus {
+.search-input:hover {
   border-color: #e50914; /* Netflix Red */
   box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
 }
@@ -136,4 +136,33 @@ h1 {
   border: 1px solid #333333;
   max-width: 450px;
   line-height: 1.5;
+}
+
+.sort-dropdown {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #1e1e24; /* A smooth, dark slate background */
+  color: #ffffff;            /* Crisp white text color */
+  border: 1px solid #3f3f46; /* Subtle border so it doesn't vanish */
+  border-radius: 8px;        /* Smooth, modern rounded corners */
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+  margin-bottom: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500; 
+}
+
+.sort-dropdown:hover {
+  border-color: #e50914; 
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  width: 100%;
 }
