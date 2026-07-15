@@ -1,0 +1,139 @@
+body {
+  margin: 0;
+  font-family:'sagoe UI', 'tahoma', 'Geneva', 'Verdana', sans-serif;
+  background-color:#121212;
+  color: #ffffff;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #e50914; /* Netflix Red */
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+/* 4. Individual Movie Cards */
+.movie-card {
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* 5. Poster Image Styling */
+.movie-poster {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-bottom: 3px solid #e50914;
+}
+
+/* 6. Typography inside Cards */
+.movie-card h3 {
+  font-size: 1.1rem;
+  margin: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds "..." to long titles */
+}
+
+.movie-card p {
+  margin: 0 10px 15px 10px;
+  font-size: 0.9rem;
+  color: #aaaaaa;
+}
+
+/* 7. Search Bar Styling */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+}
+
+.search-input {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  background-color: #1c1c1c;
+  border: 2px solid #333333;
+  border-radius: 25px;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #e50914; /* Netflix Red */
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+}
+
+.movie-release-date {
+  font-size: 0.8rem;
+  margin: 0 10px 5px 10px;
+  color: #888888;
+  font-style: italic;
+}
+
+.movie-overview {
+  font-size: 0.85rem;
+  margin: 0 10px 15px 10px;
+  color: #cccccc;
+  line-height: 1.4;
+  font-family: bubblegum, sans-serif; /* Fun font for overviews */
+}
+
+.movie-genres {
+  display: flex;
+  gap: 5px;
+  margin: 0 10px 10px 10px;
+  flex-wrap: wrap;
+}
+
+.genre-tag {
+  background-color: #2a2a2a;
+  color: #e50914; /* Cinematic Red accent */
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #444444;
+  margin-top: 5px;
+}
+
+.no-result-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  text-align: center;
+  width: 100%
+}
+
+.no-result-found p {
+  color: #888888;
+  font-size: 1.2rem;
+  background-color: #1c1c1c;
+  padding: 20px 40px;
+  border-radius: 8px;
+  border: 1px solid #333333;
+  max-width: 450px;
+  line-height: 1.5;
+}
