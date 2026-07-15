@@ -159,10 +159,63 @@ h1 {
 }
 
 .app-container {
+  .app-container {
+  width: 90%;          /* Gives it some breathing room on the sides */
+  max-width: 1200px;   /* Prevents it from getting too wide on huge monitors */
+  margin: 0 auto;      /* This centers the container on the screen */
+  padding: 20px;
+}
+}
+
+
+.black-bg-touched {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); 
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  width: 100%;
+  z-index: 1000;
+}
+
+
+.modal-content-touched {
+  background-color: rgba(30, 30, 30, 0.9); 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  
+  color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 30px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ffffff; 
+}
+
+
+.modal-body-structure {
+  display: flex;
+  gap: 20px;
+}
+
+.modal-movie-poster {
+  width: 200px;
+  border-radius: 5px;
 }
