@@ -1,9 +1,9 @@
-export default function MovieModal({selectedMovie, setSelectedMovie, watchlist, toggleWatchlist}) {
+export default function MovieModal({selectedMovie, setSelectedMovie, watchlist, toggleWatchlist, onClose}) {
     if (!selectedMovie) return null;
     return(
-        <div className="black-bg-touched" onClick={() => setSelectedMovie(null)}>
+        <div className="black-bg-touched" onClick={() => onClose()}>
           <div className="modal-content-touched" onClick={(e) => e.stopPropagation()}>
-            <button className="close-button" onClick={() => setSelectedMovie(null)}>x</button>
+            <button className="close-button" onClick={() => onClose()}>x</button>
             <div className="modal-body-structure">
               <img src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`} alt={selectedMovie.title} className="modal-movie-poster" />
               <div className="modal-info">

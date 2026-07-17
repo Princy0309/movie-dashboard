@@ -1,14 +1,40 @@
+:root {
+  /* DARK THEME (Current) */
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --card-bg: #1c1c1c;
+  --border-color: #333333;
+  --accent-color: #e50914;
+}
+
+[data-theme='light'] {
+  /* LIGHT GLASSMORPHISM THEME */
+  --bg-color: #e0e8ed;
+  --text-color: #2d3436;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.4);
+  --accent-color: #3498db; /* Changed to a cool blue for light mode */
+}
+
 body {
   margin: 0;
-  font-family:'sagoe UI', 'tahoma', 'Geneva', 'Verdana', sans-serif;
-  background-color:#121212;
-  color: #ffffff;
+  font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.app-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+} 
 
 h1 {
   text-align: center;
   margin-bottom: 2rem;
-  color: #e50914; /* Netflix Red */
+  color: var(--accent-color);
   font-size: 2.5rem;
   letter-spacing: 1px;
 }
@@ -21,7 +47,9 @@ h1 {
 
 /* 4. Individual Movie Cards */
 .movie-card {
-  background-color: #1c1c1c;
+  background-color: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -40,7 +68,7 @@ h1 {
   width: 100%;
   height: 300px;
   object-fit: cover;
-  border-bottom: 3px solid #e50914;
+  border-bottom: 3px solid var(--accent-color);
 }
 
 /* 6. Typography inside Cards */
@@ -49,13 +77,15 @@ h1 {
   margin: 10px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Adds "..." to long titles */
+  text-overflow: ellipsis;
 }
 
 .movie-card p {
-  margin: 0 10px 15px 10px;
-  font-size: 0.9rem;
-  color: #aaaaaa;
+ font-size: 1.1rem;
+  margin: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 7. Search Bar Styling */
@@ -72,32 +102,32 @@ h1 {
   max-width: 500px;
   padding: 12px 20px;
   font-size: 1.1rem;
-  background-color: #1c1c1c;
-  border: 2px solid #333333;
+  background-color: var(--card-bg);
+  border: 2px solid var(--border-color);
   border-radius: 25px;
-  color: #ffffff;
+  color: var(--text-color);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input:hover {
-  border-color: #e50914; /* Netflix Red */
-  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
 }
 
 .movie-release-date {
   font-size: 0.8rem;
   margin: 0 10px 5px 10px;
-  color: #888888;
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .movie-overview {
   font-size: 0.85rem;
   margin: 0 10px 15px 10px;
-  color: #cccccc;
+  color: var(--text-color);
   line-height: 1.4;
-  font-family: bubblegum, sans-serif; /* Fun font for overviews */
+  opacity: 0.8;
 }
 
 .movie-genres {
@@ -108,13 +138,13 @@ h1 {
 }
 
 .genre-tag {
-  background-color: #2a2a2a;
-  color: #e50914; /* Cinematic Red accent */
+  background-color: var(--border-color);
+  color: var(--accent-color);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 12px;
-  border: 1px solid #444444;
+  border: 1px solid var(--border-color);
   margin-top: 5px;
 }
 
@@ -128,34 +158,35 @@ h1 {
 }
 
 .no-result-found p {
-  color: #888888;
-  font-size: 1.2rem;
-  background-color: #1c1c1c;
+ color: var(--text-muted);
+  background-color: var(--card-bg);
   padding: 20px 40px;
   border-radius: 8px;
-  border: 1px solid #333333;
-  max-width: 450px;
-  line-height: 1.5;
+  border: 1px solid var(--border-color);
 }
 
 .sort-dropdown {
   padding: 10px 15px;
   font-size: 1rem;
-  background-color: #1e1e24; /* A smooth, dark slate background */
-  color: #ffffff;            /* Crisp white text color */
-  border: 1px solid #3f3f46; /* Subtle border so it doesn't vanish */
-  border-radius: 8px;        /* Smooth, modern rounded corners */
+  /* Use the variable for background and text */
+  background-color: var(--card-bg); 
+  color: var(--text-color);
+  
+  /* Use the variable for border */
+  border: 1px solid var(--border-color);
+  
+  border-radius: 8px;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   margin-bottom: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 500; 
+  font-weight: 500;
 }
 
 .sort-dropdown:hover {
-  border-color: #e50914; 
-  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
 }
 
 .app-container {

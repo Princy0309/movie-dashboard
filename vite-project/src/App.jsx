@@ -12,6 +12,15 @@ function App() {
   const [sortBy, setSortBy] = useState('default');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showWatchListOnly, setShowWatchListOnly] = useState(false);
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+ const toggleTheme = () => {
+   setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+ }
 
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem('myWatchlist');
@@ -81,6 +90,10 @@ function App() {
         <option value="rating-asc">Rating (Low to High)</option>
         <option value="rating-desc">Rating (High to Low)</option>
       </select>
+
+      <button className="view-toggle" onClick={toggleTheme}>
+        Switch to {theme === 'dark' ? 'light': 'dark'} Mode
+      </button>
 
       <button
         className="view-toggle"
