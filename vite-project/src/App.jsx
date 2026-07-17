@@ -3,6 +3,7 @@ import './App.css';
 import { genres } from './constants.js';
 import MovieCard from './MovieCard.jsx';
 import MovieModal from './MovieModal.jsx'; 
+import SkeletonCard from './skeleton.jsx';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -12,6 +13,10 @@ function App() {
   const [sortBy, setSortBy] = useState('default');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showWatchListOnly, setShowWatchListOnly] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('app-theme') || 'dark';
   });
@@ -64,15 +69,25 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
-    if (searchTerm) {
-      url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`;
-    }
+ useEffect(() => {
+    setLoading(true);
+    let url = searchTerm
+      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`
+      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+
+    // ADD THIS SETTIMEOUT TO FAKE A DELAY
     fetch(url)
-      .then(res => res.json())
-      .then(data => { if (data.results) setMovies(data.results); })
-      .catch(err => console.error('Error fetching movies:', err));
+      .then((res) => res.json())
+      .then((data) => {
+        setTimeout(() => {
+          if (data.results) setMovies(data.results);
+          setLoading(false);
+        }, 1000); // Wait 1 second so you can see the skeleton
+      })
+      .catch((err) => {
+        console.error('Error fetching movies:', err);
+        setLoading(false);
+      });
   }, [searchTerm]);
 
   return (
@@ -105,7 +120,13 @@ function App() {
         {showWatchListOnly ? 'Show All Movies' : 'View Watchlist'}
       </button>
 
-      {(() => {
+      {loading ? (
+        <div className="movie-grid">
+          {[...Array(6)].map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : ((() => {
         const moviesToDisplay = showWatchListOnly
           ? sortedMovies.filter(movie => watchlist.find(m => m.id === movie.id))
           : sortedMovies;
@@ -128,7 +149,8 @@ function App() {
             <p>🍿 {showWatchListOnly ? 'Your watchlist is empty!' : `No movies found matching "${searchTerm}". Try another title!`}</p>
           </div>
         );
-      })()}
+      })()
+    )}
 
       {selectedMovie && (
         <MovieModal
