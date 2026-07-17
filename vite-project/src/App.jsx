@@ -12,10 +12,13 @@ function App() {
   const [sortBy, setSortBy] = useState('default');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showWatchListOnly, setShowWatchListOnly] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('app-theme') || 'dark';
+  });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('app-theme', theme);
   }, [theme]);
 
  const toggleTheme = () => {
