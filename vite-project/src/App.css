@@ -233,3 +233,20 @@ h1 {
   border-color: #e50914;
   background: rgba(229, 9, 20, 0.1);
 }
+
+.view-toggle{
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  background-color: #333;
+  color: #fff;
+}
+
+.view-toggle:hover {
+  background-color: #555;
+  transform: scale(1.05);
+}
