@@ -11,8 +11,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [selectedMovie, setSelectedMovie] = useState(null);
-  
-  // Initialize from 'myWatchlist' to match your toggleWatchlist logic
+  const [showWatchListOnly, setShowWatchListOnly] = useState(false);
+
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem('myWatchlist');
     return saved ? JSON.parse(saved) : [];
@@ -64,28 +64,39 @@ function App() {
   }, [searchTerm]);
 
   return (
-    <>
-      <div className="app-container">
-        <h1>Movie dashboard</h1>
-        <input
-          type="text"
-          placeholder="search for a movie..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+    <div className="app-container">
+      <h1>Movie dashboard</h1>
+      <input
+        type="text"
+        placeholder="search for a movie..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
 
-        <select className="sort-dropdown" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="default">Sort movies by...</option>
-          <option value="title-asc">Title (A-Z)</option>
-          <option value="title-desc">Title (Z-A)</option>
-          <option value="rating-asc">Rating (Low to High)</option>
-          <option value="rating-desc">Rating (High to Low)</option>
-        </select>
+      <select className="sort-dropdown" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+        <option value="default">Sort movies by...</option>
+        <option value="title-asc">Title (A-Z)</option>
+        <option value="title-desc">Title (Z-A)</option>
+        <option value="rating-asc">Rating (Low to High)</option>
+        <option value="rating-desc">Rating (High to Low)</option>
+      </select>
 
-        {sortedMovies.length > 0 ? (
+      <button
+        className="view-toggle"
+        onClick={() => setShowWatchListOnly(!showWatchListOnly)}
+      >
+        {showWatchListOnly ? 'Show All Movies' : 'View Watchlist'}
+      </button>
+
+      {(() => {
+        const moviesToDisplay = showWatchListOnly
+          ? sortedMovies.filter(movie => watchlist.find(m => m.id === movie.id))
+          : sortedMovies;
+
+        return moviesToDisplay.length > 0 ? (
           <div className="movie-grid">
-            {sortedMovies.map(movie => (
+            {moviesToDisplay.map(movie => (
               <MovieCard
                 key={movie.id}
                 movie={movie}
@@ -98,10 +109,10 @@ function App() {
           </div>
         ) : (
           <div className="no-result-found">
-            <p>🍿No movies found matching "{searchTerm}". Try another title!</p>
+            <p>🍿 {showWatchListOnly ? 'Your watchlist is empty!' : `No movies found matching "${searchTerm}". Try another title!`}</p>
           </div>
-        )}
-      </div>
+        );
+      })()}
 
       {selectedMovie && (
         <MovieModal
@@ -111,7 +122,7 @@ function App() {
           onClose={() => setSelectedMovie(null)}
         />
       )}
-    </>
+    </div>
   );
 }
 
