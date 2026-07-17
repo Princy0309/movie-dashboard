@@ -219,3 +219,17 @@ h1 {
   width: 200px;
   border-radius: 5px;
 }
+
+.watchlist-btn {
+  background: transparent;
+  border: 1px solid #555;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.watchlist-btn.active {
+  border-color: #e50914;
+  background: rgba(229, 9, 20, 0.1);
+}

@@ -9,6 +9,25 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [selectedMovie, setSelectedMovie] = useState(null);
+  
+  // Initialize from 'myWatchlist' to match your toggleWatchlist logic
+  const [watchlist, setWatchlist] = useState(() => {
+    const saved = localStorage.getItem('myWatchlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const toggleWatchlist = (movie) => {
+    setWatchlist((prev) => {
+      let newList;
+      if (prev.find((m) => m.id === movie.id)) {
+        newList = prev.filter((m) => m.id !== movie.id);
+      } else {
+        newList = [...prev, movie];
+      }
+      localStorage.setItem('myWatchlist', JSON.stringify(newList));
+      return newList;
+    });
+  };
 
   const sortedMovies = [...movies].sort((a, b) => {
     if (sortBy === 'title-asc') return a.title.localeCompare(b.title);
@@ -46,15 +65,13 @@ function App() {
     <>
       <div className="app-container">
         <h1>Movie dashboard</h1>
-        <div>
-          <input
-            type="text"
-            placeholder="search for a movie..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="search for a movie..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
 
         <select className="sort-dropdown" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
           <option value="default">Sort movies by...</option>
@@ -76,8 +93,14 @@ function App() {
                 </div>
                 <h3>{movie.title}</h3>
                 <p className="movie-rating">Rating: ⭐ {movie.vote_average.toFixed(1)}</p>
-                <p className="movie-release-date">Release Date: {movie.release_date}</p>
-                <p className="movie-overview">{movie.overview ? movie.overview.slice(0, 100) + '...' : 'No description available.'}</p>
+                
+                {/* Watchlist Button in Grid */}
+                <button 
+                  className={`watchlist-btn ${watchlist.find(m => m.id === movie.id) ? 'active' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); toggleWatchlist(movie); }}
+                >
+                  {watchlist.find(m => m.id === movie.id) ? '❤️' : '🤍'}
+                </button>
               </div>
             ))}
           </div>
@@ -88,7 +111,6 @@ function App() {
         )}
       </div>
 
-      {/* Modal is now a sibling to the app-container */}
       {selectedMovie && (
         <div className="black-bg-touched" onClick={() => setSelectedMovie(null)}>
           <div className="modal-content-touched" onClick={(e) => e.stopPropagation()}>
@@ -98,21 +120,17 @@ function App() {
               <div className="modal-info">
                 <h2>{selectedMovie.title}</h2>
                 <div className="modal-stats">
-                  <p><strong>Rating:</strong> ⭐ {selectedMovie.vote_average?.toFixed(1)} / 10 ({selectedMovie.vote_count} votes)</p>
-                  <p><strong>Release Date:</strong> {selectedMovie.release_date}</p>
-                  <p><strong>Runtime:</strong> {selectedMovie.runtime ? `${selectedMovie.runtime} mins` : 'N/A'}</p>
-                  <p><strong>Popularity Score:</strong> {selectedMovie.popularity?.toFixed(0)}</p>
-                  <p><strong>Language:</strong> {selectedMovie.original_language?.toUpperCase()}</p>
+                  <p><strong>Rating:</strong> ⭐ {selectedMovie.vote_average?.toFixed(1)}</p>
+                  {/* Watchlist Button in Modal */}
+                  <button 
+                    className={`watchlist-btn ${watchlist.find(m => m.id === selectedMovie.id) ? 'active' : ''}`}
+                    onClick={() => toggleWatchlist(selectedMovie)}
+                  >
+                    {watchlist.find(m => m.id === selectedMovie.id) ? '❤️ Remove from Watchlist' : '🤍 Add to Watchlist'}
+                  </button>
                 </div>
                 <h3>Overview</h3>
-                <p className="modal-overview-text">{selectedMovie.overview || "No overview available."}</p>
-                <div className="modal-genres">
-                  {selectedMovie.genres ? (
-                    selectedMovie.genres.map(g => <span key={g.id} className="genre-tag">{g.name}</span>)
-                  ) : (
-                    selectedMovie.genre_ids?.map(id => genres[id] && <span key={id} className="genre-tag">{genres[id]}</span>)
-                  )}
-                </div>
+                <p>{selectedMovie.overview}</p>
               </div>
             </div>
           </div>
