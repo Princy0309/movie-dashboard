@@ -69,7 +69,7 @@ function App() {
 
   useEffect(() => {
     setLoading(true);
-    const url = searchTerm 
+    const url = searchTerm
       ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}&page=${page}`
       : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${page}`;
 
@@ -106,6 +106,32 @@ function App() {
     };
   }, [loading]);
 
+
+  const getWatchlistStats = () => {
+    if (watchlist.length === 0) return null;
+
+    const totalRating = watchlist.reduce((sum, m) => sum + m.vote_average, 0);
+    const avgRating = (totalRating / watchlist.length).toFixed(1);
+const genreCounts = watchlist.reduce((acc, movie) => {
+    if (movie.genre_ids && Array.isArray(movie.genre_ids)) {
+      movie.genre_ids.forEach((id) => {
+        // Look up the name directly from the object using the ID
+        const genreName = genres[id]; 
+        
+        if (genreName) {
+          acc[genreName] = (acc[genreName] || 0) + 1;
+        }
+      });
+    }
+    return acc;
+  }, {});
+
+    return { avgRating, genreCounts };
+  };
+
+  const stats = getWatchlistStats();
+
+
   return (
     <div className="app-container">
       <h1>Movie dashboard</h1>
@@ -116,7 +142,7 @@ function App() {
         onChange={(e) => {
           setSearchTerm(e.target.value);
           setPage(1);
-          setMovies([]); 
+          setMovies([]);
         }}
         className="search-input"
       />
@@ -139,6 +165,21 @@ function App() {
       >
         {showWatchListOnly ? 'Show All Movies' : 'View Watchlist'}
       </button>
+
+
+      {stats && (
+        <div className="stats-container">
+          <h3>Watchlist Statistics</h3>
+          <p>Average Rating: <strong>{stats.avgRating}</strong></p>
+          <div className="genre-stats">
+            {Object.entries(stats.genreCounts).map(([genre, count]) => (
+              <span key={genre} className="genre-badge">
+                {genre}: {count}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="movie-grid">
         {(() => {
@@ -166,7 +207,7 @@ function App() {
               </div>
             );
           }
-          
+
           return null;
         })()}
 
