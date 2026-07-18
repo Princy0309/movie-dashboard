@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { genres } from './constants.js';
 import MovieCard from './MovieCard.jsx';
-import MovieModal from './MovieModal.jsx'; 
-import SkeletonCard from './skeleton.jsx';
+import MovieModal from './MovieModal.jsx';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -14,8 +13,7 @@ function App() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showWatchListOnly, setShowWatchListOnly] = useState(false);
   const [loading, setLoading] = useState(true);
-
-
+  const [page, setPage] = useState(1);
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('app-theme') || 'dark';
@@ -26,9 +24,9 @@ function App() {
     localStorage.setItem('app-theme', theme);
   }, [theme]);
 
- const toggleTheme = () => {
-   setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
- }
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem('myWatchlist');
@@ -69,26 +67,44 @@ function App() {
     }
   };
 
- useEffect(() => {
+  useEffect(() => {
     setLoading(true);
-    let url = searchTerm
-      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`
-      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+    const url = searchTerm 
+      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}&page=${page}`
+      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${page}`;
 
-    // ADD THIS SETTIMEOUT TO FAKE A DELAY
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setTimeout(() => {
-          if (data.results) setMovies(data.results);
-          setLoading(false);
-        }, 1000); // Wait 1 second so you can see the skeleton
+        const results = data.results || [];
+        setMovies(prev => page === 1 ? results : [...prev, ...results]);
       })
       .catch((err) => {
         console.error('Error fetching movies:', err);
+        setMovies([]);
+      })
+      .finally(() => {
         setLoading(false);
       });
-  }, [searchTerm]);
+  }, [searchTerm, page]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    const target = document.querySelector('#scroll-sentinel');
+    if (target) observer.observe(target);
+
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [loading]);
 
   return (
     <div className="app-container">
@@ -97,7 +113,11 @@ function App() {
         type="text"
         placeholder="search for a movie..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setPage(1);
+          setMovies([]); 
+        }}
         className="search-input"
       />
 
@@ -110,7 +130,7 @@ function App() {
       </select>
 
       <button className="view-toggle" onClick={toggleTheme}>
-        Switch to {theme === 'dark' ? 'light': 'dark'} Mode
+        Switch to {theme === 'dark' ? 'light' : 'dark'} Mode
       </button>
 
       <button
@@ -120,20 +140,14 @@ function App() {
         {showWatchListOnly ? 'Show All Movies' : 'View Watchlist'}
       </button>
 
-      {loading ? (
-        <div className="movie-grid">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      ) : ((() => {
-        const moviesToDisplay = showWatchListOnly
-          ? sortedMovies.filter(movie => watchlist.find(m => m.id === movie.id))
-          : sortedMovies;
+      <div className="movie-grid">
+        {(() => {
+          const moviesToDisplay = showWatchListOnly
+            ? sortedMovies.filter(movie => watchlist.find(m => m.id === movie.id))
+            : movies;
 
-        return moviesToDisplay.length > 0 ? (
-          <div className="movie-grid">
-            {moviesToDisplay.map(movie => (
+          if (moviesToDisplay.length > 0) {
+            return moviesToDisplay.map(movie => (
               <MovieCard
                 key={movie.id}
                 movie={movie}
@@ -142,15 +156,22 @@ function App() {
                 watchlist={watchlist}
                 toggleWatchlist={toggleWatchlist}
               />
-            ))}
-          </div>
-        ) : (
-          <div className="no-result-found">
-            <p>🍿 {showWatchListOnly ? 'Your watchlist is empty!' : `No movies found matching "${searchTerm}". Try another title!`}</p>
-          </div>
-        );
-      })()
-    )}
+            ));
+          }
+
+          if (!loading && moviesToDisplay.length === 0) {
+            return (
+              <div className="no-result-found">
+                <p>🍿 {showWatchListOnly ? 'Your watchlist is empty!' : `No movies found matching "${searchTerm}". Try another title!`}</p>
+              </div>
+            );
+          }
+          
+          return null;
+        })()}
+
+        <div id="scroll-sentinel" style={{ height: '20px' }}></div>
+      </div>
 
       {selectedMovie && (
         <MovieModal
