@@ -302,3 +302,21 @@ h1 {
 }
 
 
+.stats-container {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+  width: 90%;
+  text-align: center;
+}
+
+.genre-badge {
+  display: inline-block;
+  background: #333;
+  color: white;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
