@@ -56,6 +56,10 @@ h1 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
+  /* ADD THESE LINES */
+  height: auto;
+  min-height: 420px; 
+  padding-bottom: 10px;
 }
 
 .movie-card:hover {
@@ -320,3 +324,40 @@ h1 {
   border-radius: 15px;
   font-size: 0.9rem;
 }
+
+/* This forces the top part of the card to push the button to the bottom */
+.movie-card h3, 
+.movie-card p, 
+.movie-genres {
+  flex-grow: 0;
+}
+
+.movie-card .watchlist-btn {
+  margin-top: auto; /* This pushes the button to the bottom of the card */
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* Ensure the button container is aligned and has space */
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This forces content to fill the card */
+  min-height: 450px;             /* Keeps the card size consistent */
+}
+
+/* This specifically fixes the button and genres alignment */
+.watchlist-btn {
+  width: calc(100% - 20px);      /* Makes button width consistent */
+  margin: 10px auto;             /* Centers the button at the bottom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.movie-genres {
+  flex-grow: 1;                  /* Pushes the button down if genres are short */
+}
+
