@@ -112,17 +112,20 @@ function App() {
         <option value="rating-asc">Rating (Low to High)</option>
         <option value="rating-desc">Rating (High to Low)</option>
       </select>
-      <button className="view-toggle" onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}>Toggle Theme</button>
+      <button className="view-toggle" onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</button>
       <button className="view-toggle" onClick={() => setShowWatchListOnly(!showWatchListOnly)}>
         {showWatchListOnly ? 'Show All Movies' : 'View Watchlist'}
       </button>
 
-      {stats && (
+      {/* Only show stats if showWatchListOnly is true AND stats exist */}
+      {showWatchListOnly && stats && (
         <div className="stats-container">
           <h3>Watchlist Statistics</h3>
           <p>Average Rating: <strong>{stats.avgRating}</strong></p>
           <div className="genre-stats">
-            {Object.entries(stats.genreCounts).map(([genre, count]) => <span key={genre} className="genre-badge">{genre}: {count}</span>)}
+            {Object.entries(stats.genreCounts).map(([genre, count]) => (
+              <span key={genre} className="genre-badge">{genre}: {count}</span>
+            ))}
           </div>
         </div>
       )}
@@ -133,33 +136,33 @@ function App() {
           if (showWatchListOnly && displayList.length === 0) return <div className="no-result-found"><p>🍿 Your watchlist is empty!</p></div>;
           if (!showWatchListOnly && displayList.length === 0 && !loading) return <div className="no-result-found"><p>🍿 No movies found.</p></div>;
           return displayList.map(m => (
-            <MovieCard 
-              key={m.id} 
-              movie={m} 
-              genres={genres} 
+            <MovieCard
+              key={m.id}
+              movie={m}
+              genres={genres}
               handleMovieClick={async (movie) => {
-                try { 
-                  const res = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}`); 
-                  setSelectedMovie(await res.json()); 
-                } catch { 
-                  setSelectedMovie(movie); 
+                try {
+                  const res = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}`);
+                  setSelectedMovie(await res.json());
+                } catch {
+                  setSelectedMovie(movie);
                 }
-              }} 
-              watchlist={watchlist} 
-              toggleWatchlist={toggleWatchlist} 
+              }}
+              watchlist={watchlist}
+              toggleWatchlist={toggleWatchlist}
             />
           ));
         })()}
-        
+
         {!showWatchListOnly && <div id="scroll-sentinel" style={{ height: '20px' }}></div>}
       </div>
 
       {selectedMovie && (
-        <MovieModal 
-          selectedMovie={selectedMovie} 
-          watchlist={watchlist} 
-          toggleWatchlist={toggleWatchlist} 
-          onClose={() => setSelectedMovie(null)} 
+        <MovieModal
+          selectedMovie={selectedMovie}
+          watchlist={watchlist}
+          toggleWatchlist={toggleWatchlist}
+          onClose={() => setSelectedMovie(null)}
         />
       )}
     </div>
